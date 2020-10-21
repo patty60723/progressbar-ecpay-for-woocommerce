@@ -1,5 +1,6 @@
 === Progress Bar ECPay ===
 Contributors: progressbartw
+Author URI: https://progressbar.tw
 Tags: e-commerce, store, sales, sell, woo, shop, cart, checkout, 支付, 綠界, payments, ECPay, woo commerce
 Requires at least: 5.0
 Tested up to: 5.5
