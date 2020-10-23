@@ -1,7 +1,7 @@
 # This file is distributed under the GNU General Public License v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: progressbar-ecpay-for-woocommerce v1.0.0\n"
+"Project-Id-Version: progressbar-ecpay-for-woocommerce v1.0.1\n"
 "Report-Msgid-Bugs-To: Progress Bar TW  <service@progressbar.tw>\n"
 "POT-Creation-Date: 2020-10-19 00:32+0800\n"
 "PO-Revision-Date: \n"

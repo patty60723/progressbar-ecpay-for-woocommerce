@@ -5,7 +5,7 @@ Tags: e-commerce, store, sales, sell, woo, shop, cart, checkout, 支付, 綠界,
 Requires at least: 5.0
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,5 +32,8 @@ WooCommerce 4.5 以上
 
 
 == Changelog ==
+v1.0.1
+Fixed data for test mode issues, removed useless code and added uninstall.php
+
 v1.0.0
 First version.
