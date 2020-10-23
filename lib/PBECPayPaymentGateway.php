@@ -38,11 +38,6 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
         $this->testmode = 'yes' === $this->get_option( 'testmode', 'no' );
         $this->devmode = 'yes' === $this->get_option( 'devmode', 'no' );
 
-        add_action(
-            'woocommerce_update_options_payment_gateways_' . $this->id,
-            array($this, 'process_admin_options')
-        );
-
         add_action('woocommerce_api_' . $this->webhook_name(),
             array($this, 'webhook')
         );
@@ -351,8 +346,8 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
     {
         // woocommerce -> includes -> admin -> metaboxes -> class-wc-metabox-order-data.php
         add_action('woocommerce_admin_order_data_after_order_details', function($order){
-            $metadata = $order->get_meta('ec_payment_form_data');
-            $responsed_metadata = ($order->get_meta('ec_payment_response_data'));
+            $metadata = $order->get_meta('ec_payment_form_data') ?: [];
+            $responsed_metadata = $order->get_meta('ec_payment_response_data') ?: [];
 
             require PB_ECPAY_VIEW_ADMIN_DIR . "ecpay_detail_meta.php";
         });

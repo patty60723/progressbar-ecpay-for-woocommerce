@@ -3,16 +3,17 @@
  * Plugin Name: Progress Bar - ECPay gateway
  * Plugin URI: https://progressbar.tw/courses/18
  * Description: 進度條 - 綠界金流模組
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: 進度條線上課程
  * Author URI: https://progressbar.tw/
- * License: GPL2
+ * License: GPL-3.0-or-later
  */
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+define('PB_ECPAY_PLUGIN', plugin_basename( __FILE__ ) );
 define('PB_ECPAY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PB_ECPAY_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PB_ECPAY_VIEW_COMPOMENTS_DIR', PB_ECPAY_PLUGIN_DIR."view/compoments/");

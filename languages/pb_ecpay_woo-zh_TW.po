@@ -135,3 +135,6 @@ msgstr "控制使用者在結帳時所看到的標題."
 
 msgid "This controls the description which the user sees during checkout."
 msgstr "此項目控制使用者在結帳時會看到的說明."
+
+msgid "Settings"
+msgstr "設定"
