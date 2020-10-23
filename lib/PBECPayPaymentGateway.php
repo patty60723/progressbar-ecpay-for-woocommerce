@@ -29,6 +29,12 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
             "BARCODE" => __('Barcode - convenience store', 'pb_ecpay_woo'),
         ];
 
+
+        $this->merchantIDForTest = '2000132';
+        $this->hashKeyForTest = '5294y06JbISpM5x9';
+        $this->hashIVForTest = 'v77hoKGq4kWxNNIS';
+
+
         // Load the settings.
         $this->init_form_fields();
         $this->init_settings();
@@ -37,6 +43,12 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
         $this->description = $this->get_option('description');
         $this->testmode = 'yes' === $this->get_option( 'testmode', 'no' );
         $this->devmode = 'yes' === $this->get_option( 'devmode', 'no' );
+
+        // Update options
+        add_action(
+            'woocommerce_update_options_payment_gateways_' . $this->id,
+            array($this, 'process_admin_options')
+        );
 
         add_action('woocommerce_api_' . $this->webhook_name(),
             array($this, 'webhook')
@@ -197,17 +209,17 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
             'merchantIDForTest' => array(
                 'title' => __('Merchant ID for test', 'pb_ecpay_woo'),
                 'type' => 'locked_text_input_in_form',
-                'value' => "2000132",
+                'value' => $this->merchantIDForTest,
             ),
             'hashKeyForTest'  => array(
                 'title' => __('Hash Key for test', 'pb_ecpay_woo'),
                 'type' => 'locked_text_input_in_form',
-                'value' => '5294y06JbISpM5x9',
+                'value' => $this->hashKeyForTest,
             ),
             'hashIVForTest'  => array(
                 'title' => __('Hash IV for test', 'pb_ecpay_woo'),
                 'type' => 'locked_text_input_in_form',
-                'value' => 'v77hoKGq4kWxNNIS',
+                'value' => $this->hashIVForTest,
             ),
             'section2' => array(
                 'type'  => 'hr_in_form'
@@ -221,6 +233,18 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
         );
     }
 
+    private function getMerchantIDByMode(){
+        return ($this->testmode) ? $this->merchantIDForTest : $this->get_option('merchantID');
+    }
+
+    private function getHashKeyByMode(){
+        return ($this->testmode) ? $this->hashKeyForTest : $this->get_option('hashKey');
+    }
+
+    private function getHashIVByMode(){
+        return ($this->testmode) ? $this->hashIVForTest : $this->get_option('hashIV');
+    }
+
     public function process_payment($order_id)
     {
         $order = wc_get_order($order_id);
@@ -228,12 +252,12 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
         $order_key = $order->get_order_key();
         $totalAmount = intval($order->get_total());
 
-        $merchantID = ($this->testmode) ? $this->get_option('merchantIDForTest') : $this->get_option('merchantID');
-        $hashKey = ($this->testmode)? $this->get_option('hashKeyForTest') : $this->get_option('hashKey');
-        $hashIV = ($this->testmode) ? $this->get_option('hashIVForTest') : $this->get_option('hashIV');
+        $merchantID = $this->getMerchantIDByMode();
+        $hashKey = $this->getHashKeyByMode();
+        $hashIV = $this->getHashIVByMode();
 
         $ecPaymentFormData = [
-            'MerchantID' => $this->get_option('merchantID'),
+            'MerchantID' => $merchantID,
             'MerchantTradeNo' => $this->get_option('orderNumberPrefix') . time(),
             'MerchantTradeDate' => date("Y/m/d H:i:s"), 
             "PaymentType" => "aio",
@@ -286,16 +310,10 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
             }
         }
 
-        $CheckMacValue = $this->generate(
-            $postData,
-            $this->get_option('hashKey'),
-            $this->get_option('hashIV')
-        );
-
         $result = ($this->generate(
             $postData,
-            $this->get_option('hashKey'),
-            $this->get_option('hashIV')
+            $this->getHashKeyByMode(),
+            $this->getHashIVByMode()
         ) == $postData["CheckMacValue"]);
 
         return $result;
@@ -370,8 +388,8 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
             $metadata["EncryptType"] = 1;
             $metadata["CheckMacValue"] = $this->generate(
                 $metadata,
-                $this->get_option('hashKey'),
-                $this->get_option('hashIV')
+                $this->getHashKeyByMode(),
+                $this->getHashIVByMode()
             );
             require_once PB_ECPAY_PLUGIN_DIR . "view/" . "ecpay_form.php";
         }
