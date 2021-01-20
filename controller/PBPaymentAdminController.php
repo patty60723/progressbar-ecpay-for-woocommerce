@@ -36,7 +36,7 @@ class PBPaymentAdminController {
 	    $option = get_option('pb_payment_gateway_settings');
 	    $settings = $this->get_pb_payment_settings();
 	    $payment_fields = array_filter($settings, function($setting){
-	        return $setting['class'] === 'enabled-checkbox';
+	        return $setting['class'] ?? null === 'enabled-checkbox';
         });
 
         $payment_fields = array_map(function($enabled_payment){
