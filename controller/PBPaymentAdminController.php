@@ -1,29 +1,56 @@
 <?php
 
 class PBPaymentAdminController {
-	function __construct() {
-		$this->init();
-	}
-	
-	public function init() {
-	    $this->checkOptions();
-		$this->registerSettingLinkAfterActivated();
+    private $currentOptions;
+
+    function __construct() {
+        $this->defaultOptions = [
+            'enabled_ecpay' => true
+        ];
+        $this->optionValidKeys = [
+            ...array_keys($this->defaultOptions)
+        ];
+        $this->init();
+    }
+
+    public function init() {
+        $this->currentOptions = get_option('pb_payment_gateway_settings', false);
+        $this->checkOptions();
+        $this->registerSettingLinkAfterActivated();
         $this->registerWooCommerceSettingsTab();
-	}
+    }
 
-	function checkOptions(){
-	    $option = get_option('pb_payment_gateway_settings');
+    function checkOptions(){
+        if ($this->currentOptions === false) {
+            $this->currentOptions = $this->defaultOptions;
+            add_option('pb_payment_gateway_settings', $this->currentOptions);
+        } else if($this->currentOptionsInvalidAndFix()){
+            update_option('pb_payment_gateway_settings', $this->currentOptions);
+        }
+    }
 
-        if(!$option){
-            add_option('pb_payment_gateway_settings', array(
-                'enabled_ecpay' => true
-            ));
-        } else {
-            if(!isset($option['enabled_ecpay'])){
-                $option['enabled_ecpay'] = true;
-                update_option('pb_payment_gateway_settings', $option);
+    function currentOptionsInvalidAndFix(){
+        $invalid = false;
+
+        foreach($this->defaultOptions as $key => $value){
+            if(!array_key_exists($key, $this->currentOptions)){
+                $invalid = true;
+                $this->currentOptions[$key] = $value;
             }
         }
+
+        foreach($this->currentOptions as $key => $value){
+            if(!in_array($key, $this->optionValidKeys)){
+                $invalid = true;
+                unset($this->currentOptions[$key]);
+            }
+        }
+
+        return $invalid;
+    }
+
+    public function getOption($key){
+        return $this->currentOptions[$key] ?? false;
     }
 
     function registerWooCommerceSettingsTab() {
@@ -33,10 +60,9 @@ class PBPaymentAdminController {
     }
 
     function update_pb_payment_settings(){
-	    $option = get_option('pb_payment_gateway_settings');
-	    $settings = $this->get_pb_payment_settings();
-	    $payment_fields = array_filter($settings, function($setting){
-	        return $setting['class'] ?? null === 'enabled-checkbox';
+        $settings = $this->get_pb_payment_settings();
+        $payment_fields = array_filter($settings, function($setting){
+            return $setting['class'] ?? null === 'enabled-checkbox';
         });
 
         $payment_fields = array_map(function($enabled_payment){
@@ -55,14 +81,8 @@ class PBPaymentAdminController {
                 $this->setGatewayEnabled($payment_gateway_id, 'no');
             }
 
-            if($option){
-                $option[$payment_key] = $payment_value;
-                update_option('pb_payment_gateway_settings', $option);
-            } else {
-                add_option('pb_payment_gateway_settings', array(
-                    $payment_key => $payment_value
-                ));
-            }
+            $this->currentOptions[$payment_key] = $payment_value;
+            update_option('pb_payment_gateway_settings', $this->currentOptions);
         }
 
         $enabled_payments = array_filter($payment_fields, fn($enabled) => $enabled);
@@ -97,7 +117,7 @@ class PBPaymentAdminController {
     }
 
     function get_pb_payment_settings(){
-        $enable = get_option('pb_payment_gateway_settings')['enabled_ecpay'] ?? false;
+        $enable = $this->currentOptions['enabled_ecpay'] ?? false;
 
         $settings = array(
             'section_title' => array(
@@ -122,16 +142,16 @@ class PBPaymentAdminController {
         return apply_filters('wc_settings_pb_payment_settings', $settings);
     }
 
-	function registerSettingLinkAfterActivated(){
-		$plugin = PB_ECPAY_PLUGIN;
-		add_filter("plugin_action_links_$plugin", array($this, 'plugin_action_links_hooks'));
-	}
+    function registerSettingLinkAfterActivated(){
+        $plugin = PB_ECPAY_PLUGIN;
+        add_filter("plugin_action_links_$plugin", array($this, 'plugin_action_links_hooks'));
+    }
 
-	function plugin_action_links_hooks($links){
-		$url = admin_url("admin.php?page=wc-settings&tab=checkout&section=pb_woo_ecpay");
-		$url = esc_url($url);
-		$settings_link = "<a href='$url'>" . __('Settings', 'pb_ecpay_woo') . '</a>';
-		array_unshift($links, $settings_link);
-		return $links;
-	  }
+    function plugin_action_links_hooks($links){
+        $url = admin_url("admin.php?page=wc-settings&tab=checkout&section=pb_woo_ecpay");
+        $url = esc_url($url);
+        $settings_link = "<a href='$url'>" . __('Settings', 'pb_ecpay_woo') . '</a>';
+        array_unshift($links, $settings_link);
+        return $links;
+    }
 }
