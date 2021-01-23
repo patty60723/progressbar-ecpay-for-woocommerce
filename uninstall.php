@@ -10,3 +10,4 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 delete_site_option( 'woocommerce_pb_woo_ecpay_settings' );
+delete_site_option( 'woocommerce_pb_woo_mpg_settings' );
