@@ -29,8 +29,14 @@ msgstr "進入綠界結帳頁面"
 msgid "ECPay payment by Progress bar online course"
 msgstr "進度條線上課程 - 綠界金流"
 
+msgid "Newebpay payment by Progress bar online course"
+msgstr "進度條線上課程 - 藍新金流"
+
 msgid "ECPay payment gateway for customers."
 msgstr "讓顧客可以利用綠界 ECPay 金流結帳。"
+
+msgid "Newebpay payment gateway for customers."
+msgstr "讓顧客可以利用藍新 Newebpay 金流結帳。"
 
 msgid "Credit Card and UnionPay. (Needs to apply for activation from ECPay)"
 msgstr "信用卡及銀聯卡(需申請開通)"
@@ -68,11 +74,17 @@ msgstr "結帳標題"
 msgid "ECPay payment gateway"
 msgstr "ECPay 綠界金流"
 
+msgid "Newebpay payment gateway"
+msgstr "Newebpay 藍新金流"
+
 msgid "Description of the gateway"
 msgstr "結帳敘述"
 
 msgid "Checkout with ECPay page."
 msgstr "使用綠界科技結帳頁面。"
+
+msgid "Checkout with Newebpay page."
+msgstr "使用藍新科技結帳頁面。"
 
 msgid "Merchant ID"
 msgstr "商店編號(Merchant ID)"
