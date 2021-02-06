@@ -49,10 +49,6 @@ class PBPaymentAdminController {
         return $invalid;
     }
 
-    public function getOption($key){
-        return $this->currentOptions[$key] ?? false;
-    }
-
     function registerWooCommerceSettingsTab() {
         add_filter('woocommerce_settings_tabs_array', array($this, 'add_settings_tab'), 21);
         add_action('woocommerce_settings_tabs_pb_payment', array($this, 'settings_pb_payment_tab'));
