@@ -5,7 +5,8 @@ class PBPaymentAdminController {
 
     function __construct() {
         $this->defaultOptions = [
-            'enabled_ecpay' => true
+            'enabled_ecpay' => true,
+            'enabled_transport' => true,
         ];
         $this->optionValidKeys = [
             ...array_keys($this->defaultOptions)
@@ -63,35 +64,44 @@ class PBPaymentAdminController {
 
         $payment_fields = array_map(function($enabled_payment){
             $value = $_POST[$enabled_payment['id']] ?? false;
-            return filter_var($value, FILTER_VALIDATE_BOOLEAN);;
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
         }, $payment_fields);
 
         // 暫時寫死 settings name 與 payment_gateway 的 id 關聯，因為不知道新的金流服務的id規範是什麼
         $payment_gateway_id_map = [
-            'enabled_ecpay' => 'pb_woo_ecpay'
+            'enabled_ecpay' => 'pb_woo_ecpay',
+            'enabled_transport' => 'pb_woo_ecpay_transport'
         ];
 
         foreach($payment_fields as $payment_key => $payment_value){
-            if($payment_value === false){
-                $payment_gateway_id = $payment_gateway_id_map[$payment_key];
-                $this->setGatewayEnabled($payment_gateway_id, 'no');
-            }
-
             $this->currentOptions[$payment_key] = $payment_value;
-            update_option('pb_payment_gateway_settings', $this->currentOptions);
+        }
+        update_option('pb_payment_gateway_settings', $this->currentOptions);
+
+        foreach($payment_fields as $payment_key => $payment_value){
+            $value = $payment_value ? 'yes' : 'no';
+            $payment_gateway_id = $payment_gateway_id_map[$payment_key];
+            $this->setGatewayEnabled($payment_gateway_id, $value);
         }
 
-        $enabled_payments = array_filter($payment_fields, fn($enabled) => $enabled);
-        if(count($enabled_payments) === 1){
-            $payment_key = array_key_first($enabled_payments);
-            $payment_gateway_id = $payment_gateway_id_map[$payment_key];
-            $this->setGatewayEnabled($payment_gateway_id, 'yes');
-        }
+//        $enabled_payments = array_filter($payment_fields, fn($enabled) => $enabled);
+//        if(count($enabled_payments) === 1){
+//            $payment_key = array_key_first($enabled_payments);
+//            $payment_gateway_id = $payment_gateway_id_map[$payment_key];
+//            $this->setGatewayEnabled($payment_gateway_id, 'yes');
+//        }
     }
 
     function setGatewayEnabled($payment_gateway_id, $enabled){
         $payment_gateways = WC_Payment_Gateways::instance();
-        $payment_gateway = $payment_gateways->payment_gateways()[$payment_gateway_id];
+        $payment_gateway = false;
+        foreach($payment_gateways->payment_gateways() as $gateway){
+            if(($gateway->id ?? null) === $payment_gateway_id){
+                $payment_gateway = $gateway;
+                break;
+            }
+        }
+
         if($payment_gateway){
             $option_key = $payment_gateway->get_option_key();
             $option = get_option($option_key);
@@ -113,7 +123,8 @@ class PBPaymentAdminController {
     }
 
     function get_pb_payment_settings(){
-        $enable = $this->currentOptions['enabled_ecpay'] ?? false;
+        $enable_ecpay = $this->currentOptions['enabled_ecpay'] ?? false;
+        $enable_transport = $this->currentOptions['enabled_transport'] ?? false;
 
         $settings = array(
             'section_title' => array(
@@ -127,7 +138,15 @@ class PBPaymentAdminController {
                 'type' => 'checkbox',
                 'id' => 'wc_settings_tab_pb_payment_enabled_ecpay_checkbox',
                 'class' => 'enabled-checkbox',
-                'value' => $enable ? 'yes' : ''
+                'value' => $enable_ecpay ? 'yes' : ''
+            ),
+            'enabled_transport' => array(
+                'name' => __('Enable Transport', 'pb_ecpay_woo'),
+                'desc' => __('Enable Transport', 'pb_ecpay_woo'),
+                'type' => 'checkbox',
+                'id' => 'wc_settings_tab_pb_payment_enabled_transport_checkbox',
+                'class' => 'enabled-checkbox',
+                'value' => $enable_transport ? 'yes' : ''
             ),
             'section_end' => array(
                 'type' => 'sectionend',

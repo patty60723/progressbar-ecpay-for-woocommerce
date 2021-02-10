@@ -39,8 +39,13 @@ class PB_ECPay_Payment
             'woocommerce_payment_gateways',
             function($payment_gateways){
                 include_once PB_ECPAY_PLUGIN_DIR . "lib/" . "PBECPayPaymentGateway.php";
+                include_once PB_ECPAY_PLUGIN_DIR . "lib/" . "PBECPayTransportGateway.php";
                 if(get_option('pb_payment_gateway_settings')['enabled_ecpay'] ?? false){
                     $payment_gateways[] = 'PBECPayPaymentGateway';
+                }
+
+                if(get_option('pb_payment_gateway_settings')['enabled_transport'] ?? false){
+                    $payment_gateways[] = 'PBECPayTransportGateway';
                 }
 
                 return $payment_gateways;
