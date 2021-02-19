@@ -342,12 +342,18 @@ class PBECPayTransportGateway extends WC_Payment_Gateway
 
     public function validate_fields()
     {
-        if ($this->validation_map_keys($_POST)) {
-            return true;
+        $full_name = $_POST['billing_last_name'] . $_POST['billing_first_name'];
+        if (!preg_match('/^\p{Han}{2,5}$/u', $full_name) && !preg_match('/^[A-Za-z]{4,10}$/', $full_name)) {
+            wc_add_notice('姓名格式有誤(中文 2~5 個字, 英文 4~10 個字, 不可混用)', 'error');
         }
 
-        wc_add_notice('請先選擇取貨的超商', 'error');
-        return false;
+        if (!preg_match('/^09[0-9]{8}$/', $_POST['billing_phone'])) {
+            wc_add_notice('聯絡電話格式有誤(09開頭，10位數)', 'error');
+        }
+
+        if (!$this->validation_map_keys($_POST)) {
+            wc_add_notice('請先選擇取貨的超商', 'error');
+        }
     }
 
 

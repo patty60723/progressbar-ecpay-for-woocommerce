@@ -13,11 +13,11 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-define('PB_ECPAY_PLUGIN', plugin_basename( __FILE__ ) );
+define('PB_ECPAY_PLUGIN', plugin_basename(__FILE__));
 define('PB_ECPAY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PB_ECPAY_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PB_ECPAY_VIEW_COMPOMENTS_DIR', PB_ECPAY_PLUGIN_DIR."view/compoments/");
-define('PB_ECPAY_VIEW_ADMIN_DIR', PB_ECPAY_PLUGIN_DIR."view/admin/");
+define('PB_ECPAY_VIEW_COMPOMENTS_DIR', PB_ECPAY_PLUGIN_DIR . "view/compoments/");
+define('PB_ECPAY_VIEW_ADMIN_DIR', PB_ECPAY_PLUGIN_DIR . "view/admin/");
 
 class PB_ECPay_Payment
 {
@@ -37,25 +37,43 @@ class PB_ECPay_Payment
         load_plugin_textdomain('pb_ecpay_woo', false, basename(dirname(__FILE__)) . '/languages/');
         add_filter(
             'woocommerce_payment_gateways',
-            function($payment_gateways){
+            function ($payment_gateways) {
+
                 include_once PB_ECPAY_PLUGIN_DIR . "lib/" . "PBECPayPaymentGateway.php";
                 include_once PB_ECPAY_PLUGIN_DIR . "lib/" . "PBECPayTransportGateway.php";
-                if(get_option('pb_payment_gateway_settings')['enabled_ecpay'] ?? false){
+                if (get_option('pb_payment_gateway_settings')['enabled_ecpay'] ?? false) {
                     $payment_gateways[] = 'PBECPayPaymentGateway';
                 }
 
-                if(get_option('pb_payment_gateway_settings')['enabled_transport'] ?? false){
+                if (get_option('pb_payment_gateway_settings')['enabled_transport'] ?? false) {
                     $payment_gateways[] = 'PBECPayTransportGateway';
                 }
 
                 return $payment_gateways;
             }
         );
+
+
+        add_action('woocommerce_checkout_process', function () {
+            if ($_POST['payment_method'] === 'pb_woo_ecpay_transport') {
+                add_action('woocommerce_checkout_fields', function ($fields) {
+                    unset($fields['billing']['billing_country']);
+                    unset($fields['billing']['billing_address_1']);
+                    unset($fields['billing']['billing_address_2']);
+                    unset($fields['billing']['billing_city']);
+                    unset($fields['billing']['billing_state']);
+                    unset($fields['billing']['billing_postcode']);
+                    return $fields;
+                });
+            }
+        });
     }
 }
 
-function init_pb_ecpay_payment() {
+function init_pb_ecpay_payment()
+{
     require_once PB_ECPAY_PLUGIN_DIR . "controller/" . "PBPaymentAdminController.php";
+
     new PB_ECPay_Payment();
 }
 
