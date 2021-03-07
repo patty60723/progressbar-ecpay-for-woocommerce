@@ -266,7 +266,7 @@ class PBECPayPaymentGateway extends WC_Payment_Gateway
             'ItemName' => __('Some goods', 'pb_ecpay_woo'),
             'ChoosePayment' => "ALL",
             'ReturnURL' => get_site_url() . "/?wc-api=" . $this->webhook_name(),
-            'ClientBackURL' => get_site_url() . "/checkout/order-received/{$order_id}/?key={$order_key}",
+            'ClientBackURL' => $order->get_checkout_order_received_url(),
             'ExpireDate' => 7, // ATM 過期時間 1 ~ 60 天
             'IgnorePayment' => $this->getIgnorePayments()
         ];

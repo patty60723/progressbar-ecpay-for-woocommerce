@@ -10,7 +10,7 @@
                 <span class="toggle-indicator" aria-hidden="true"></span>
             </button>
         </div>
-        <p class="merchant_trade_no_row">廠商訂單編號 MerchantTradeNo: <?php echo $metadata['MerchantTradeNo'];?></p>
+        <p class="merchant_trade_no_row">廠商訂單編號 MerchantTradeNo: <?php echo (isset($metadata['MerchantTradeNo']) ? $metadata['MerchantTradeNo'] : '');?></p>
     </div>
     <div id="ecpay_metadata_details_for_dev" style="display:none;">
 <?php

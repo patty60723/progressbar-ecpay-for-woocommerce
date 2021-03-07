@@ -41,8 +41,23 @@ msgstr "讓顧客可以利用藍新 Newebpay 金流結帳。"
 msgid "Credit Card and UnionPay. (Needs to apply for activation from ECPay)"
 msgstr "信用卡及銀聯卡(需申請開通)"
 
+msgid "Credit Card"
+msgstr "信用卡"
+
+msgid "Credit Card Points"
+msgstr "信用卡紅利"
+
+msgid "American Express Credit Card"
+msgstr "美國運通卡"
+
+msgid "UnionPay"
+msgstr "銀聯卡"
+
 msgid "Web ATM. (Not shows on phone)"
 msgstr "網路 ATM(手機不支援)"
+
+msgid "Web ATM"
+msgstr "網路 ATM"
 
 msgid "ATM"
 msgstr "自動櫃員機"
@@ -64,6 +79,9 @@ msgstr "已產生過訂單編號，無法再次結帳，請重新下單。"
 
 msgid "Enable this payment gateway"
 msgstr "開啟此付款方式(請注意是否在測試模式)"
+
+msgid "Enabled layaway plan"
+msgstr "開啟信用卡分期"
 
 msgid "Enabled"
 msgstr "開啟"
@@ -92,11 +110,20 @@ msgstr "商店編號(Merchant ID)"
 msgid "Merchant ID, 2000132 is for test mode."
 msgstr "綠界的商店編號，2000132 為測試用的。"
 
+msgid "Merchant ID, MS318433486 is for test mode."
+msgstr "藍新的商店編號，MS318433486 為測試用的。"
+
 msgid "Hash Key, 5294y06JbISpM5x9 is for test mode."
 msgstr "綠界的 Hash Key，5294y06JbISpM5x9 為測試用的。"
 
 msgid "Hash IV，v77hoKGq4kWxNNIS is for test mode."
 msgstr "綠界的 Hash IV，v77hoKGq4kWxNNIS 為測試用的。"
+
+msgid "Hash IV, Cv7Ek1qTnN6bOrQP is for test mode."
+msgstr "藍新的 Hash IV，Cv7Ek1qTnN6bOrQP 為測試用的。"
+
+msgid "Hash Key, LDab8DaFga7tStd6tniuHlsR0tUK6w9v is for test mode."
+msgstr "藍新的 Hash IV，LDab8DaFga7tStd6tniuHlsR0tUK6w9v 為測試用的。"
 
 msgid "Enabled payment methods"
 msgstr "可使用的付款方式"
@@ -124,6 +151,15 @@ msgstr "測試用 Hash IV"
 msgid "Enable development mode"
 msgstr "開啟開發者模式"
 
+msgid "Enabled Trade Limit (Seconds)"
+msgstr "啟用即時交易限制秒數"
+
+msgid "Maximum is 900 and minimum is 60. Default of 0 means disabled."
+msgstr "最大值為900秒，最小值為60秒。預設值0代表不限制交易秒數。"
+
+msgid "Maximum is 180 days."
+msgstr "最大值為180天"
+
 msgid "Enabled(only if you are a developer)"
 msgstr "開啟(一般使用者請勿開啟)"
 
@@ -138,6 +174,9 @@ msgstr "一些商品"
 
 msgid "ECpay Failed"
 msgstr "ECPay 失敗"
+
+msgid "Newebpay Failed"
+msgstr "Newebpay 失敗"
 
 msgid "ECPay webhook Failed"
 msgstr "ECPay webhook 有問題"
